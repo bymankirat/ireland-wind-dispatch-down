@@ -19,7 +19,7 @@ import data as D  # noqa: E402
 import demo  # noqa: E402
 import quality as Q  # noqa: E402
 import report  # noqa: E402
-from config import FIG_DIR, LAST_FULL_YEAR, RESULTS_DIR, TABLE_FILE  # noqa: E402
+from config import FIG_DIR, LAST_FULL_YEAR, MIN_DAYS, RESULTS_DIR, TABLE_FILE  # noqa: E402
 
 
 def main(argv):
@@ -56,6 +56,12 @@ def main(argv):
     d = A.classify(h, caps)
     est = A.lost_energy(d)
     pla = A.lost_energy(d, band="placebo")
+    short = est.loc[est["days"] < MIN_DAYS, "year"].tolist()
+    if short:
+        print(f"   years left out (fewer than {MIN_DAYS} days of data): {short}")
+    est = est[est["days"] >= MIN_DAYS].reset_index(drop=True)
+    pla = pla[pla["year"].isin(est["year"])].reset_index(drop=True)
+    d = d[d["year"].isin(est["year"])]
     m, cmp_ = A.compare_official(est)
     years = sorted(est["year"].tolist())
     recent = [y for y in years if y >= years[-1] - 1]

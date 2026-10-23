@@ -80,35 +80,72 @@ def probe(day: str = "2025-06-01") -> dict[str, str]:
     return chosen
 
 
+def _window(rows: list[dict], start, end) -> list[dict]:
+    """Keep only readings inside [start, end], because the API may return a wider period."""
+    lo, hi = pd.Timestamp(start), pd.Timestamp(end) + pd.Timedelta(hours=23, minutes=59)
+    out = []
+    for r in rows:
+        t = pd.to_datetime(r.get("EffectiveTime"), format="%d-%b-%Y %H:%M:%S", errors="coerce")
+        if t is not pd.NaT and lo <= t <= hi:
+            out.append(r)
+    return out
+
+
+def _series_week(area: str, ws: pd.Timestamp, we: pd.Timestamp) -> list[dict]:
+    """One series for one week; any day with too few readings is fetched again on its own."""
+    rows = _window(_rows([area], ws, we, rng="week"), ws, we)
+    per_day = pd.Series([r["EffectiveTime"][:11] for r in rows]).value_counts()
+    full = per_day.max() if len(per_day) else 96
+    full = 48 if full <= 50 else 96            # SNSP is half-hourly, the rest 15-minute
+    keep = []
+    for day in pd.date_range(ws, we, freq="D"):
+        key = f"{day:%d-%b-%Y}"
+        mine = [r for r in rows if r["EffectiveTime"].startswith(key)]
+        if len(mine) < 0.9 * full:
+            try:
+                again = _window(_rows([area], day, day, rng="day", tries=3), day, day)
+                if len(again) > len(mine):
+                    mine = again
+            except RuntimeError:
+                pass
+        keep += mine
+    return keep
+
+
 def download(folder: Path = RAW_DIR) -> list[str]:
-    """One JSON file per month with all four series; finished months are downloaded once."""
+    """Each series is fetched on its own, week by week (the API cuts long multi-series
+    requests short). One file per series per month; finished months are fetched once."""
+    from concurrent.futures import ThreadPoolExecutor
+
     folder.mkdir(parents=True, exist_ok=True)
     names = probe()
-    areas = [names[k] for k in AREAS]
     today = pd.Timestamp.today().normalize()
     last_month = today.replace(day=1) - pd.DateOffset(months=1)
-    failed = []
-    for m in pd.date_range(START, last_month, freq="MS"):
-        f = folder / f"grid_{m:%Y-%m}.json"
-        if f.exists() and f.stat().st_size > 1000:
-            continue
-        end = m + pd.offsets.MonthEnd(0)
-        try:
-            rows = _rows(areas, m, end, rng="month")
-            per_field = pd.Series([r.get("FieldName") for r in rows]).value_counts().to_dict()
-            expected = ((end - m).days + 1) * 96
-            if rows and min(per_field.values()) < 0.9 * expected and len(per_field) >= 3:
-                rows = []   # cut short: fetch week by week
+    months = list(pd.date_range(START, last_month, freq="MS"))
+
+    def one_series(key: str) -> list[str]:
+        failed = []
+        for m in months:
+            f = folder / f"{key}_{m:%Y-%m}.json"
+            if f.exists() and f.stat().st_size > 1000:
+                continue
+            end = m + pd.offsets.MonthEnd(0)
+            rows = []
+            try:
                 for ws in pd.date_range(m, end, freq="7D"):
-                    rows += _rows(areas, ws, min(ws + pd.Timedelta(days=6), end), rng="week")
-        except RuntimeError as e:
-            failed.append(f"{m:%Y-%m}")
-            print(f"  {m:%b %Y}: skipped ({e})")
-            continue
-        f.write_text(json.dumps(rows))
-        counts = pd.Series([r.get("FieldName") for r in rows]).value_counts().to_dict()
-        print(f"  {m:%b %Y}: {len(rows):,} readings {counts}")
-    return failed
+                    rows += _series_week(names[key], ws, min(ws + pd.Timedelta(days=6), end))
+            except RuntimeError as e:
+                failed.append(f"{key} {m:%Y-%m}")
+                print(f"  {key} {m:%b %Y}: skipped ({e})")
+                continue
+            f.write_text(json.dumps(rows))
+            days = len({r["EffectiveTime"][:11] for r in rows})
+            print(f"  {key} {m:%b %Y}: {len(rows):,} readings on {days} days")
+        return failed
+
+    with ThreadPoolExecutor(len(AREAS)) as ex:
+        results = list(ex.map(one_series, list(AREAS)))
+    return [x for r in results for x in r]
 
 
 def _hourly(s: pd.Series) -> pd.Series:
@@ -118,7 +155,7 @@ def _hourly(s: pd.Series) -> pd.Series:
 
 def build_table(folder: Path = RAW_DIR) -> tuple[pd.DataFrame, dict]:
     rows = []
-    for f in sorted(folder.glob("grid_*.json")):
+    for f in sorted(folder.glob("*_*.json")):
         rows += json.loads(f.read_text())
     if not rows:
         raise FileNotFoundError(f"no grid files in {folder}")
@@ -133,8 +170,10 @@ def build_table(folder: Path = RAW_DIR) -> tuple[pd.DataFrame, dict]:
     df = df.dropna(subset=["t", "v"])
     series, counts = {}, {}
     for field, col in FIELDS.items():
-        s = df.loc[df["FieldName"] == field].set_index("t")["v"]
-        counts[col] = {"readings": int(len(s)), "duplicates": int(s.index.duplicated().sum()),
+        sub = df.loc[df["FieldName"] == field]
+        dup = int(sub["t"].duplicated().sum())
+        s = sub.drop_duplicates(subset="t", keep="last").set_index("t")["v"]
+        counts[col] = {"readings": int(len(s)), "duplicates": dup,
                        "first": str(s.index.min()), "last": str(s.index.max())}
         series[col] = _hourly(s)
     h = pd.DataFrame(series)[list(FIELDS.values())]
