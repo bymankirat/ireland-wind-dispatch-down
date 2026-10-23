@@ -25,7 +25,8 @@ AREAS = {
 # Field names in the API's rows, and the column each becomes
 FIELDS = {"WIND_ACTUAL": "wind_mw", "WIND_FCAST": "wind_fc_mw", "SNSP_ALL": "snsp_pct",
           "SYSTEM_DEMAND": "demand_mw"}
-START = "2021-01-01"          # SNSP is published from 2021; earlier years cannot be classed
+START = "2022-01-01"          # SNSP is only published from March 2021, so 2022 is the first full year
+END = "2025-12-31"            # last year with official EirGrid figures to compare against
 MIN_DAYS = 330                # a year enters the comparison only with this many days of data
 LAST_FULL_YEAR = 2025         # official EirGrid figures exist up to this year
 
