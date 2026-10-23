@@ -35,9 +35,10 @@ jobs:
       - name: Tests
         run: python tests/run_tests.py 2>&1 | tee results/test_log.txt
       - name: Pipeline
+        timeout-minutes: 100
         run: |
           set -o pipefail
-          python run_pipeline.py 2>&1 | tee results/run_log.txt
+          python -u run_pipeline.py 2>&1 | tee results/run_log.txt
       - name: Save downloaded months, even if a later step failed
         if: always()
         uses: actions/cache/save@v4

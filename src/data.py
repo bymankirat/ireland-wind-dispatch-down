@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from config import AREAS, FIELDS, GRID_API, RAW_DIR, REGION, RESULTS_DIR, START, TABLE_FILE
+from config import AREAS, END, FIELDS, GRID_API, RAW_DIR, REGION, RESULTS_DIR, START, TABLE_FILE
 
 
 def _fetch(url: str, timeout: int = 120) -> bytes:
@@ -106,7 +106,7 @@ def _series_week(area: str, ws: pd.Timestamp, we: pd.Timestamp) -> list[dict]:
         mine = [r for r in rows if r["EffectiveTime"].startswith(key)]
         if len(mine) < 0.9 * full:
             try:
-                again = _window(_rows([area], day, day, rng="day", tries=3), day, day)
+                again = _window(_rows([area], day, day, rng="day", tries=2), day, day)
                 if len(again) > len(mine):
                     mine = again
             except RuntimeError:
@@ -123,7 +123,7 @@ def download(folder: Path = RAW_DIR) -> list[str]:
     folder.mkdir(parents=True, exist_ok=True)
     names = probe()
     today = pd.Timestamp.today().normalize()
-    last_month = today.replace(day=1) - pd.DateOffset(months=1)
+    last_month = min(today.replace(day=1) - pd.DateOffset(months=1), pd.Timestamp(END).replace(day=1))
     months = list(pd.date_range(START, last_month, freq="MS"))
 
     def one_series(key: str) -> list[str]:
@@ -143,7 +143,7 @@ def download(folder: Path = RAW_DIR) -> list[str]:
                 continue
             f.write_text(json.dumps(rows))
             days = len({r["EffectiveTime"][:11] for r in rows})
-            print(f"  {key} {m:%b %Y}: {len(rows):,} readings on {days} days")
+            print(f"  {key} {m:%b %Y}: {len(rows):,} readings on {days} days", flush=True)
         return failed
 
     with ThreadPoolExecutor(len(AREAS)) as ex:
