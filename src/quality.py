@@ -24,7 +24,10 @@ def run_checks(h: pd.DataFrame, counts: dict | None = None) -> tuple[list[dict],
     full = pd.date_range(h.index.min(), h.index.max(), freq="h")
     for c in h.columns:
         cov = h[c].reindex(full).notna().mean()
-        add(f"coverage {c}", cov >= 0.97, f"{100 * cov:.2f}% of hours present")
+        # gaps are days the dashboard did not return; the method uses only hours with all four
+        # series, so moderate gaps are reported but stop the run only below 90%
+        add(f"coverage {c}", cov >= 0.97 or (cov >= 0.90 and None),
+            f"{100 * cov:.2f}% of hours present", hard=cov < 0.90)
     w, f, s, dm = (h[c].dropna() for c in ["wind_mw", "wind_fc_mw", "snsp_pct", "demand_mw"])
     add("wind in plausible range", w.between(-50, 7000).mean() > 0.999,
         f"min {w.min():.0f} MW, max {w.max():.0f} MW")

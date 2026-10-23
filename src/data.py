@@ -130,9 +130,15 @@ def download(folder: Path = RAW_DIR) -> list[str]:
         failed = []
         for m in months:
             f = folder / f"{key}_{m:%Y-%m}.json"
-            if f.exists() and f.stat().st_size > 1000:
-                continue
             end = m + pd.offsets.MonthEnd(0)
+            if f.exists() and f.stat().st_size > 1000:
+                have = {r["EffectiveTime"][:11] for r in json.loads(f.read_text())}
+                if len(have) >= end.day:
+                    continue          # complete month: keep it
+                print(f"  {key} {m:%b %Y}: {end.day - len(have)} days missing, fetching again", flush=True)
+                old = json.loads(f.read_text())
+            else:
+                old = []
             rows = []
             try:
                 for ws in pd.date_range(m, end, freq="7D"):
@@ -141,6 +147,9 @@ def download(folder: Path = RAW_DIR) -> list[str]:
                 failed.append(f"{key} {m:%Y-%m}")
                 print(f"  {key} {m:%b %Y}: skipped ({e})")
                 continue
+            if old:   # keep whatever the earlier download had, add what is new
+                seen = {(r["EffectiveTime"], r.get("FieldName")) for r in rows}
+                rows += [r for r in old if (r["EffectiveTime"], r.get("FieldName")) not in seen]
             f.write_text(json.dumps(rows))
             days = len({r["EffectiveTime"][:11] for r in rows})
             print(f"  {key} {m:%b %Y}: {len(rows):,} readings on {days} days", flush=True)
