@@ -35,23 +35,26 @@ def _url(areas: list[str], start: pd.Timestamp, end: pd.Timestamp, rng: str) -> 
                            end=f"{end:%d-%b-%Y}", areas=",".join(areas))
 
 
-def _rows(areas: list[str], start, end, rng: str = "month", tries: int = 5) -> list[dict]:
+def _rows(areas: list[str], start, end, rng: str = "month", tries: int = 6) -> list[dict]:
+    """The API sometimes answers a valid request with no rows, so an empty answer is retried
+    with growing pauses; [] is returned only if every try is empty."""
     url = _url(areas, start, end, rng)
     last = None
     for attempt in range(tries):
         try:
             payload = json.loads(_fetch(url))
-            time.sleep(0.4)
             rows = payload.get("Rows")
             if rows is None:
                 raise ValueError(f"no Rows key: {str(payload)[:200]}")
-            if rows or attempt >= 1:   # the API sometimes answers empty once
+            if rows:
+                time.sleep(0.3)
                 return rows
+            last = None
         except (ValueError, OSError, subprocess.CalledProcessError) as e:
             last = e
-        time.sleep(3 * (attempt + 1) ** 2)
+        time.sleep(min(2 ** attempt, 20))
     if last:
-        raise RuntimeError(f"no answer for {areas} {start:%b %Y}: {last}")
+        raise RuntimeError(f"no answer for {areas} {start:%d %b %Y}: {last}")
     return []
 
 
@@ -62,7 +65,7 @@ def probe(day: str = "2025-06-01") -> dict[str, str]:
     for key, names in AREAS.items():
         for name in names:
             try:
-                rows = _rows([name], d, d, rng="day", tries=2)
+                rows = _rows([name], d, d, rng="day", tries=6)
             except RuntimeError as e:
                 log.append(f"{key} {name}: error {e}")
                 continue

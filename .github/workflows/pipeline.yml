@@ -27,7 +27,7 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - name: Restore downloaded months
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: data/raw
           key: eirgrid-raw-${{ github.run_id }}
@@ -38,6 +38,12 @@ jobs:
         run: |
           set -o pipefail
           python run_pipeline.py 2>&1 | tee results/run_log.txt
+      - name: Save downloaded months, even if a later step failed
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw
+          key: eirgrid-raw-${{ github.run_id }}
       - name: Commit results
         if: always()
         run: |
