@@ -1,0 +1,5 @@
+wind windactual: 96 rows, fields ['WIND_ACTUAL'], first [{'Value': 2501, 'Region': 'ALL', 'EffectiveTime': '01-Jun-2025 00:00:00', 'FieldName': 'WIND_ACTUAL'}]
+wind_fc windforecast: 96 rows, fields ['WIND_FCAST'], first [{'Value': 3367, 'Region': 'ALL', 'EffectiveTime': '01-Jun-2025 00:00:00', 'FieldName': 'WIND_FCAST'}]
+snsp snspall: 0 rows, fields [], first []
+snsp SnspALL: 48 rows, fields ['SNSP_ALL'], first [{'EffectiveTime': '01-Jun-2025 00:00:00', 'FieldName': 'SNSP_ALL', 'Region': 'ALL', 'Value': 59.7076}]
+demand demandactual: 96 rows, fields ['SYSTEM_DEMAND'], first [{'EffectiveTime': '01-Jun-2025 00:00:00', 'FieldName': 'SYSTEM_DEMAND', 'Region': 'ALL', 'Value': 3723}]
