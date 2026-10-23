@@ -1,104 +1,18 @@
 1. Downloading EirGrid data
   wind windactual: 96 rows, fields ['WIND_ACTUAL'], first [{'Value': 2501, 'Region': 'ALL', 'EffectiveTime': '01-Jun-2025 00:00:00', 'FieldName': 'WIND_ACTUAL'}]
   wind_fc windforecast: 96 rows, fields ['WIND_FCAST'], first [{'Value': 3367, 'Region': 'ALL', 'EffectiveTime': '01-Jun-2025 00:00:00', 'FieldName': 'WIND_FCAST'}]
-  snsp snspall: 0 rows, fields [], first []
-  snsp SnspALL: 48 rows, fields ['SNSP_ALL'], first [{'EffectiveTime': '01-Jun-2025 00:00:00', 'FieldName': 'SNSP_ALL', 'Region': 'ALL', 'Value': 59.7076}]
-  demand demandactual: 96 rows, fields ['SYSTEM_DEMAND'], first [{'EffectiveTime': '01-Jun-2025 00:00:00', 'FieldName': 'SYSTEM_DEMAND', 'Region': 'ALL', 'Value': 3723}]
-  Jan 2020: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Feb 2020: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Mar 2020: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Apr 2020: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  May 2020: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Jun 2020: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Jul 2020: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Aug 2020: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Sep 2020: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Oct 2020: 5,764 readings {'WIND_FCAST': 2884, 'WIND_ACTUAL': 2880}
-  Nov 2020: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Dec 2020: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Jan 2021: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Feb 2021: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Mar 2021: 9,402 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344, 'SNSP_ALL': 1338}
-  Apr 2021: 9,068 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 2016, 'SNSP_ALL': 332}
-  May 2021: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Jun 2021: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Jul 2021: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Aug 2021: 8,736 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344, 'SNSP_ALL': 672}
-  Sep 2021: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Oct 2021: 7,732 readings {'WIND_FCAST': 3364, 'WIND_ACTUAL': 3360, 'SNSP_ALL': 1008}
-  Nov 2021: 8,400 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344, 'SNSP_ALL': 336}
-  Dec 2021: 8,736 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344, 'SNSP_ALL': 672}
-  Jan 2022: 7,728 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 672, 'SNSP_ALL': 336}
-  Feb 2022: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Mar 2022: 7,728 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 672, 'SNSP_ALL': 336}
-  Apr 2022: 9,408 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SNSP_ALL': 1344, 'SYSTEM_DEMAND': 1344}
-  May 2022: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Jun 2022: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Jul 2022: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Aug 2022: 8,400 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344, 'SNSP_ALL': 336}
-  Sep 2022: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Oct 2022: 8,068 readings {'WIND_FCAST': 3364, 'WIND_ACTUAL': 3360, 'SNSP_ALL': 672, 'SYSTEM_DEMAND': 672}
-  Nov 2022: 7,387 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SNSP_ALL': 667}
-  Dec 2022: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Jan 2023: 9,072 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 2016, 'SNSP_ALL': 336}
-  Feb 2023: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Mar 2023: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Apr 2023: 8,064 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SNSP_ALL': 672, 'SYSTEM_DEMAND': 672}
-  May 2023: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Jun 2023: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Jul 2023: 8,736 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344, 'SNSP_ALL': 672}
-  Aug 2023: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Sep 2023: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Oct 2023: 5,764 readings {'WIND_FCAST': 2884, 'WIND_ACTUAL': 2880}
-  Nov 2023: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Dec 2023: 10,416 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 2688, 'SNSP_ALL': 1008}
-  Jan 2024: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Feb 2024: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Mar 2024: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Apr 2024: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  May 2024: 8,736 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SNSP_ALL': 1344, 'SYSTEM_DEMAND': 672}
-  Jun 2024: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Jul 2024: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Aug 2024: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Sep 2024: 8,736 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SNSP_ALL': 1344, 'SYSTEM_DEMAND': 672}
-  Oct 2024: 5,764 readings {'WIND_FCAST': 2884, 'WIND_ACTUAL': 2880}
-  Nov 2024: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Dec 2024: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Jan 2025: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Feb 2025: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Mar 2025: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Apr 2025: 8,400 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344, 'SNSP_ALL': 336}
-  May 2025: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Jun 2025: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Jul 2025: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Aug 2025: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Sep 2025: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Oct 2025: 8,644 readings {'WIND_FCAST': 2884, 'WIND_ACTUAL': 2880, 'SYSTEM_DEMAND': 2880}
-  Nov 2025: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Dec 2025: 9,408 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 2016, 'SNSP_ALL': 672}
-  Jan 2026: 8,064 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344}
-  Feb 2026: 5,760 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880}
-  Mar 2026: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Apr 2026: 10,080 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 2688, 'SNSP_ALL': 672}
-  May 2026: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Jun 2026: 8,640 readings {'WIND_ACTUAL': 2880, 'WIND_FCAST': 2880, 'SYSTEM_DEMAND': 2880}
-  Jul 2026: 7,392 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SNSP_ALL': 672}
-  Aug 2026: 8,400 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344, 'SNSP_ALL': 336}
-  Sep 2026: 8,400 readings {'WIND_ACTUAL': 3360, 'WIND_FCAST': 3360, 'SYSTEM_DEMAND': 1344, 'SNSP_ALL': 336}
-   48,570 hours, 2021-03-08 00:00:00 to 2026-10-05 23:00:00
-2. Quality checks
-   pass  coverage wind_mw: 99.28% of hours present
-   pass  coverage wind_fc_mw: 99.24% of hours present
-   FAIL  coverage snsp_pct: 16.63% of hours present
-   FAIL  coverage demand_mw: 45.03% of hours present
-   pass  wind in plausible range: min -5 MW, max 4670 MW
-   pass  wind forecast in plausible range: min 10 MW, max 5634 MW
-   FAIL  SNSP in 0-100%: min 0.3%, max 75.6%
-   FAIL  demand in plausible range: min 2823 MW, max 7443 MW
-   pass  forecast tracks actual wind: correlation 0.953
-   pass  no stuck wind readings (6+ identical hours): 1 stuck hours
-   warn  duplicates wind_mw: 10262 duplicate timestamps of 245,180
-   warn  duplicates wind_fc_mw: 10177 duplicate timestamps of 245,038
-   warn  duplicates snsp_pct: 194 duplicate timestamps of 16,449
-   warn  duplicates demand_mw: 2784 duplicate timestamps of 110,849
-A quality check failed; see results/quality_checks.csv
+  snsp SnspALL: 0 rows, fields [], first []
+  snsp snspall: 48 rows, fields ['SNSP_ALL'], first [{'EffectiveTime': '01-Jun-2025 00:00:00', 'FieldName': 'SNSP_ALL', 'Region': 'ALL', 'Value': 59.7076}]
+  demand demandactual: 0 rows, fields [], first []
+Traceback (most recent call last):
+  File "/home/runner/work/ireland-wind-dispatch-down/ireland-wind-dispatch-down/run_pipeline.py", line 100, in <module>
+    main(sys.argv[1:])
+  File "/home/runner/work/ireland-wind-dispatch-down/ireland-wind-dispatch-down/run_pipeline.py", line 35, in main
+    failed = D.download()
+             ^^^^^^^^^^^^
+  File "/home/runner/work/ireland-wind-dispatch-down/ireland-wind-dispatch-down/src/data.py", line 121, in download
+    names = probe()
+            ^^^^^^^
+  File "/home/runner/work/ireland-wind-dispatch-down/ireland-wind-dispatch-down/src/data.py", line 79, in probe
+    raise RuntimeError(f"no working area name for {missing}; see results/api_probe.txt")
+RuntimeError: no working area name for ['demand']; see results/api_probe.txt
