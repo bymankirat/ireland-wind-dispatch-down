@@ -25,7 +25,7 @@ def run_checks(h: pd.DataFrame, counts: dict | None = None) -> tuple[list[dict],
     for c in h.columns:
         cov = h[c].reindex(full).notna().mean()
         add(f"coverage {c}", cov >= 0.97, f"{100 * cov:.2f}% of hours present")
-    w, f, s, dm = h["wind_mw"], h["wind_fc_mw"], h["snsp_pct"], h["demand_mw"]
+    w, f, s, dm = (h[c].dropna() for c in ["wind_mw", "wind_fc_mw", "snsp_pct", "demand_mw"])
     add("wind in plausible range", w.between(-50, 7000).mean() > 0.999,
         f"min {w.min():.0f} MW, max {w.max():.0f} MW")
     add("wind forecast in plausible range", f.between(-50, 8000).mean() > 0.999,
@@ -35,7 +35,7 @@ def run_checks(h: pd.DataFrame, counts: dict | None = None) -> tuple[list[dict],
         f"min {dm.min():.0f} MW, max {dm.max():.0f} MW")
     corr = w.corr(f)
     add("forecast tracks actual wind", corr > 0.85, f"correlation {corr:.3f}")
-    stuck = (w.diff().abs() < 1e-9).rolling(6).sum().ge(6).sum()
+    stuck = (h["wind_mw"].diff().abs() < 1e-9).rolling(6).sum().ge(6).sum()
     add("no stuck wind readings (6+ identical hours)", stuck < 24, f"{int(stuck)} stuck hours", hard=False)
     if counts:
         for k, v in counts.items():

@@ -19,13 +19,14 @@ REGION = "ALL"
 AREAS = {
     "wind": ["windactual"],
     "wind_fc": ["windforecast"],
-    "snsp": ["snspall", "SnspALL", "snsp"],
+    "snsp": ["SnspALL", "snspall", "snsp"],
     "demand": ["demandactual"],
 }
 # Field names in the API's rows, and the column each becomes
 FIELDS = {"WIND_ACTUAL": "wind_mw", "WIND_FCAST": "wind_fc_mw", "SNSP_ALL": "snsp_pct",
           "SYSTEM_DEMAND": "demand_mw"}
-START = "2020-01-01"          # first full year in the study
+START = "2021-01-01"          # SNSP is published from 2021; earlier years cannot be classed
+MIN_DAYS = 330                # a year enters the comparison only with this many days of data
 LAST_FULL_YEAR = 2025         # official EirGrid figures exist up to this year
 
 # How hours are classed. The operating limit is found from the data each year (99.5th

@@ -85,7 +85,7 @@ def lost_energy(d: pd.DataFrame, band: str = "at_cap", n_boot: int = N_BOOT,
             "band_ratio": total[2] / total[3] if total[3] else np.nan,
             "lost_gwh": lost / 1000, "lost_pct": pct,
             "ci_low": float(np.nanpercentile(bpct, 2.5)), "ci_high": float(np.nanpercentile(bpct, 97.5)),
-            "wind_gwh": total[4] / 1000,
+            "wind_gwh": total[4] / 1000, "days": int(n),
         })
     return pd.DataFrame(out)
 
