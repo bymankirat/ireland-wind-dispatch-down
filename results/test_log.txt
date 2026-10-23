@@ -1,0 +1,15 @@
+  ok  limit detected at 75% {2023: 75.0, 2024: 75.0}
+  ok  planted loss recovered within 0.5 points estimated 7.17% vs planted 7.15%
+  ok  planted loss inside each year's 95% interval [{'year': 2023, 'lost_pct': 7.95, 'ci_low': 6.6, 'ci_high': 9.04}, {'year': 2024, 'lost_pct': 6.35, 'ci_low': 5.13, 'ci_high': 7.43}]
+  ok  no planted loss gives about zero [-0.035, -0.069]
+  ok  placebo band about zero [0.014, 0.032]
+  ok  arithmetic: lost = 0.9*50 - 40 = 5 
+  ok  arithmetic: % = 5 / 1005 
+  ok  official comparison merges three years 
+  ok  official inside interval counted 
+  ok  QC passes on clean data 
+  ok  QC fails on impossible SNSP 
+  ok  fractional SNSP converted to percent 
+  ok  hourly loss shares sum to 100 
+
+All 13 tests passed.
