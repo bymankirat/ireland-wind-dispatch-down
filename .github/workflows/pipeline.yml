@@ -1,0 +1,48 @@
+name: pipeline
+
+on:
+  push:
+    branches: [main]
+    paths: ["src/**", "run_pipeline.py", "tests/**", ".github/workflows/**", "requirements.txt"]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 3 * *"   # monthly, after EirGrid's month is complete
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pipeline
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Restore downloaded months
+        uses: actions/cache@v4
+        with:
+          path: data/raw
+          key: eirgrid-raw-${{ github.run_id }}
+          restore-keys: eirgrid-raw-
+      - name: Tests
+        run: python tests/run_tests.py 2>&1 | tee results/test_log.txt
+      - name: Pipeline
+        run: |
+          set -o pipefail
+          python run_pipeline.py 2>&1 | tee results/run_log.txt
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "status: ${{ job.status }}  run: ${{ github.run_id }}  $(date -u)" > results/last_run.txt
+          git add -A results docs data/hourly_all_island.csv.gz 2>/dev/null || git add -A results docs
+          git commit -m "Update results from EirGrid data [skip ci]" || echo "nothing to commit"
+          git pull --rebase origin main && git push
