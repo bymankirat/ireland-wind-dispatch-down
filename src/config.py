@@ -11,16 +11,20 @@ FIG_DIR = DOCS_DIR / "figures"
 
 # EirGrid Smart Grid Dashboard, 15-minute data. The SNSP limit applies to the whole island,
 # so every series is taken for the all-island system (region ALL) to match it.
-GRID_API = ("https://www.smartgriddashboard.com/DashboardService.svc/data"
-            "?area={area}&region={region}&datefrom={start}&dateto={end}")
+# The dashboard moved to this chart API in 2025; it returns up to four series per request.
+GRID_API = ("https://www.smartgriddashboard.com/api/chart/?region={region}&chartType=default"
+            "&dateRange={range}&dateFrom={start}&dateTo={end}&areas={areas}")
 REGION = "ALL"
 # Several spellings are tried for each series, because the dashboard has renamed some of them.
 AREAS = {
     "wind": ["windactual"],
     "wind_fc": ["windforecast"],
-    "snsp": ["SnspALL", "snspall", "SnspAll"],
+    "snsp": ["snspall", "SnspALL", "snsp"],
     "demand": ["demandactual"],
 }
+# Field names in the API's rows, and the column each becomes
+FIELDS = {"WIND_ACTUAL": "wind_mw", "WIND_FCAST": "wind_fc_mw", "SNSP_ALL": "snsp_pct",
+          "SYSTEM_DEMAND": "demand_mw"}
 START = "2020-01-01"          # first full year in the study
 LAST_FULL_YEAR = 2025         # official EirGrid figures exist up to this year
 
