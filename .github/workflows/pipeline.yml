@@ -1,4 +1,5 @@
 name: pipeline
+# Runs on code changes, monthly, or by hand from the Actions tab (Run workflow).
 
 on:
   push:
