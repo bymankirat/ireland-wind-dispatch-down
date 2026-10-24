@@ -1,0 +1,11 @@
+check,result,detail
+coverage wind_mw,pass,99.96% of hours present
+coverage wind_fc_mw,pass,99.99% of hours present
+coverage snsp_pct,pass,99.96% of hours present
+coverage demand_mw,pass,99.96% of hours present
+wind in plausible range,pass,"min -2 MW, max 4648 MW"
+wind forecast in plausible range,pass,"min 10 MW, max 5634 MW"
+SNSP in 0-100%,pass,"min 0.2%, max 76.5%"
+demand in plausible range,pass,"min 2903 MW, max 7443 MW"
+forecast tracks actual wind,pass,correlation 0.952
+no stuck wind readings (6+ identical hours),pass,1 stuck hours

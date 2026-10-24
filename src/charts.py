@@ -80,12 +80,29 @@ def driver_heatmap(t: pd.DataFrame, path):
 def placebo(est: pd.DataFrame, pla: pd.DataFrame, path):
     fig, ax = plt.subplots(figsize=(7.5, 3.2))
     x = np.arange(len(est))
-    ax.bar(x - 0.18, pla["lost_pct"], 0.34, color=GREY, label="Hours 6–12 points under the limit (placebo)")
-    ax.bar(x + 0.18, est["lost_pct"], 0.34, color=BLUE, label="Hours at the limit")
+    ax.bar(x - 0.18, pla["lost_pct"], 0.34, color=GREY, label="Placebo: hours with under 1,000 MW of forecast wind")
+    ax.bar(x + 0.18, est["lost_pct"], 0.34, color=BLUE, label="All hours (the estimate)")
     ax.axhline(0, color=INK, lw=0.8)
     ax.set_xticks(x, est["year"].astype(str))
     ax.set_ylabel("Estimated lost wind, %")
     ax.legend(frameon=False, fontsize=9, loc="upper left")
+    ax.grid(axis="x", visible=False)
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def ratio_lines(t: pd.DataFrame, path):
+    """Actual / forecast wind by forecast band, for the lowest and highest demand quarters."""
+    fig, ax = plt.subplots(figsize=(7.5, 3.8))
+    x = np.arange(len(t))
+    ax.plot(x, t["Highest demand"], "-o", color=GREY, lw=2, ms=5, label="Busiest quarter of hours (baseline)")
+    ax.plot(x, t["Lowest demand"], "-o", color=BLUE, lw=2, ms=5, label="Quietest quarter of hours")
+    ax.fill_between(x, t["Lowest demand"], t["Highest demand"], color=BLUE, alpha=0.12, lw=0)
+    ax.axhline(1, color=INK, lw=0.8)
+    ax.set_xticks(x, [s.split("–")[0] for s in t.index], rotation=0, fontsize=8)
+    ax.set_xlabel("Forecast wind, MW (start of each 500 MW band)")
+    ax.set_ylabel("Actual ÷ forecast wind")
+    ax.legend(frameon=False, fontsize=9, loc="lower left")
     ax.grid(axis="x", visible=False)
     fig.savefig(path)
     plt.close(fig)

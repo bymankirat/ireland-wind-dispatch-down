@@ -2,12 +2,7 @@ name: pipeline
 # Runs on code changes, monthly, or by hand from the Actions tab (Run workflow).
 
 on:
-  push:
-    branches: [main]
-    paths: ["src/**", "run_pipeline.py", "tests/**", ".github/workflows/**", "requirements.txt"]
-  workflow_dispatch:
-  schedule:
-    - cron: "17 6 3 * *"   # monthly, after EirGrid's month is complete
+  workflow_dispatch:   # by hand only: a full download takes about an hour
 
 permissions:
   contents: write

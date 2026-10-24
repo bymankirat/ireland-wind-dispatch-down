@@ -1,0 +1,38 @@
+{
+  "caps": {
+    "2022": 74.0,
+    "2023": 75.0,
+    "2024": 74.0,
+    "2025": 75.0
+  },
+  "comparison": {
+    "years": 4,
+    "pearson_r": 0.8641982243017217,
+    "mean_abs_diff_pts": 0.9019247830966225,
+    "mean_diff_pts": 0.8240905124476446,
+    "years_official_inside_ci": 3
+  },
+  "latest": {
+    "year": 2025,
+    "lost_gwh": 675.1648044072185,
+    "lost_pct": 4.718288246662357,
+    "ci_low": 3.2713081475997288,
+    "ci_high": 6.413916743430549,
+    "wind_gwh": 13634.36376,
+    "days": 365.0,
+    "share_of_hours_pct": 4.384062107546524,
+    "official_curtailment_pct": 4.5,
+    "official_constraint_pct": 8.9,
+    "official_total_pct": 13.4,
+    "difference_pts": 0.21828824666235658
+  },
+  "first_year": 2022,
+  "last_year": 2025,
+  "recent_years": [
+    2024,
+    2025
+  ],
+  "data_end": "2025-12-31",
+  "demo": false,
+  "hours": 35060
+}

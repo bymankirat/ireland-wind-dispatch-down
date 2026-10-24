@@ -1,0 +1,106 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wind Lost to Grid Limits</title><style>
+:root{--bg:#f7f6f2;--fg:#1d2733;--muted:#5b6672;--card:#fff;--line:#dcd9d2;--accent:#1f5f8b;--chip:#eceae4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181d;--fg:#e8ecf0;--muted:#9aa5b1;--card:#1c222a;--line:#313a45;--accent:#7fb6e0;--chip:#252d37;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14181d;--fg:#e8ecf0;--muted:#9aa5b1;--card:#1c222a;--line:#313a45;--accent:#7fb6e0;--chip:#252d37;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 Georgia,'Iowan Old Style',serif;
+ padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:780px;margin:0 auto;padding-block:40px 64px}
+h1,h2,h3{font-family:system-ui,'Segoe UI',Arial,sans-serif;text-wrap:balance;line-height:1.25}
+h1{font-size:30px;margin:0 0 8px}h2{font-size:21px;margin:40px 0 8px}
+.kicker{font:600 12px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.lede{font-size:18px;color:var(--fg)}
+.meta{color:var(--muted);font:14px/1.5 system-ui,sans-serif}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:24px 0}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.tile b{display:block;font:700 26px/1.1 system-ui,sans-serif;color:var(--accent)}
+.tile span{font:13px/1.4 system-ui,sans-serif;color:var(--muted)}
+figure{margin:20px 0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}
+figure img{width:100%;height:auto;display:block}
+figcaption{font:13px/1.5 system-ui,sans-serif;color:#5b6672;margin-top:8px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font:14px/1.4 system-ui,sans-serif;min-width:560px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--chip);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.note{background:var(--card);border-left:3px solid var(--accent);padding:12px 16px;border-radius:6px;font-size:15px}
+a{color:var(--accent)}
+code{font:13px ui-monospace,Menlo,monospace;background:var(--chip);padding:1px 5px;border-radius:4px}
+</style></head><body><main>
+<p class="kicker">Ireland and Northern Ireland · 2022–2025 · public EirGrid data</p>
+<h1>How much wind does the all-island grid turn away, and when?</h1>
+<p class="lede">EirGrid reports once a year how much wind energy was turned down because of system-wide
+limits. This analysis rebuilds that figure hour by hour from the public 15-minute data on the Smart Grid
+Dashboard, checks it against the official numbers, and shows when the limits bind.</p>
+<p class="meta">Mankirat Singh · Independent analysis, not an EirGrid or SONI publication ·
+<a href="https://github.com/bymankirat/ireland-wind-dispatch-down">Code</a> ·
+<a href="https://bymankirat.github.io/myportfolio/">Portfolio</a> · Data 2022–2025</p>
+<div class="tiles"><div class="tile"><b>4.7%</b><span>of available wind turned down when demand was low in 2025, estimated from public data (95% interval 3.3–6.4%)</span></div><div class="tile"><b>4.5%</b><span>EirGrid&#x27;s published curtailment for 2025</span></div><div class="tile"><b>675 GWh</b><span>estimated wind energy turned down in 2025; correlation with EirGrid&#x27;s yearly figures r = 0.86</span></div><div class="tile"><b>1.8% → 4.4%</b><span>share of hours within 2 points of the SNSP limit, 2022 to 2025</span></div></div>
+
+<h2>1. The footprint: on quiet days, the same wind gives less power</h2>
+<p>EirGrid's forecast over-predicts in windy hours, so actual output falls below the forecast as wind rises
+in every hour. But among hours with the <em>same</em> forecast wind, output is lower still when demand is
+low, which is when system-wide limits bind. At 4,500–5,000 MW of forecast wind, the quietest
+quarter of hours produced 23% less than the busiest quarter. Forecast errors do not depend on
+demand; system limits do. That gap is what this analysis measures.</p>
+<figure><img src="figures/0_ratio_lines.png" alt="Line chart: actual divided by forecast wind falls with forecast wind, and falls further in the quietest quarter of hours">
+<figcaption>Actual ÷ forecast wind, all hours 2022–2025, for the busiest and quietest quarter of hours by demand.</figcaption></figure>
+
+<h2>2. The estimate against EirGrid's published figures</h2>
+<p>Within each year, season and 500 MW band of forecast wind, the busiest quarter of hours is the baseline.
+The shortfall of every other hour below it is counted as demand-linked turn-down: wind that was available
+but not used because demand was low. Across
+4 years the estimate differs from EirGrid's published curtailment by 0.9 percentage points on
+average (it sits 0.8 points above it), and the official figure falls inside the 95%
+interval in 3 of 4 years. The largest gap is 2024
+(7.0% against 4.7%), a year in which EirGrid's local
+<em>constraints</em> also jumped, and some constraints are likely to follow demand too.</p>
+<figure><img src="figures/1_yearly_vs_official.png" alt="Bar chart of the yearly estimate beside EirGrid's published curtailment">
+<figcaption>Blue: this estimate with a 95% interval from resampling whole days. Grey: EirGrid and SONI, Annual Renewable Constraint and Curtailment Report 2025, Table 3 (all-island wind).</figcaption></figure>
+<div class="tbl"><table><thead><tr><th>Year</th><th>Turned down, GWh</th><th>Estimate, %</th><th>95% low</th><th>95% high</th><th>EirGrid curtailment, %</th><th>EirGrid total dispatch-down, %</th><th>Hours at SNSP limit, %</th></tr></thead><tbody><tr><td>2022</td><td>472</td><td>3.3</td><td>2.1</td><td>4.7</td><td>3.5</td><td>8.5</td><td>1.8</td></tr><tr><td>2023</td><td>821</td><td>5.6</td><td>4.4</td><td>6.8</td><td>4.7</td><td>10.7</td><td>2.9</td></tr><tr><td>2024</td><td>997</td><td>7.0</td><td>5.5</td><td>8.6</td><td>4.7</td><td>14.0</td><td>3.6</td></tr><tr><td>2025</td><td>675</td><td>4.7</td><td>3.3</td><td>6.4</td><td>4.5</td><td>13.4</td><td>4.4</td></tr></tbody></table></div>
+<p>Robustness: with demand quarters defined within each year rather than each season, the estimate is 2022: 3.9%, 2023: 5.9%, 2024: 7.2%, 2025: 5.3%.</p>
+
+<h2>3. Does the method invent losses? A placebo test</h2>
+<p>When forecast wind is under 1,000 MW, system-wide limits essentially never bind, so the same calculation
+should find nothing there. It finds at most 0.5% in any year
+— close to zero, so the method is not turning forecast noise into losses.</p>
+<figure><img src="figures/5_placebo.png" alt="Bar chart comparing the placebo with the estimate per year"></figure>
+
+<h2>4. When the limit binds</h2>
+<p>The share of hours within 2 points of the SNSP limit rose from 1.8% in 2022
+to 4.4% in 2025. In 2024–2025, about 61% of the estimated lost energy
+fell between 11 pm and 7 am, when demand is lowest. Demand that can move into those hours (electric-vehicle
+charging, storage, heating) is the cheapest way to use more of this wind.</p>
+<figure><img src="figures/2_monthly_at_cap.png" alt="Line chart of the monthly share of hours at the SNSP limit"></figure>
+<figure><img src="figures/3_hour_profile.png" alt="Bar chart of the share of estimated lost energy by hour of day"></figure>
+<figure><img src="figures/4_driver_heatmap.png" alt="Heatmap of the chance of being at the SNSP limit by demand and forecast wind">
+<figcaption>Chance that an hour is at the SNSP limit, by demand and forecast wind, 2024–2025.</figcaption></figure>
+
+<h2>Method</h2>
+<p>Four EirGrid Smart Grid Dashboard series for the whole island (actual wind, forecast wind, SNSP, demand),
+15-minute readings averaged to the hour, 2022–2025. Each hour is placed in a year, a season,
+a 500 MW band of forecast wind and a quarter of demand within its year and season. The busiest quarter's
+actual ÷ forecast ratio in each band is the baseline; bands without baseline hours borrow the nearest band.
+Lost energy is the baseline ratio times forecast, minus actual, summed over the other three quarters. The
+percentage divides by actual wind plus the loss. Intervals come from resampling whole days 1,000 times.
+SNSP limits read from the data (99.5th percentile): 2022: 74%, 2023: 75%, 2024: 74%, 2025: 75%.</p>
+
+<h2>Limitations</h2>
+<p class="note">The busiest hours are not free of curtailment, so for curtailment that follows the SNSP rule
+this is a lower bound: on synthetic data where the limit also binds in busy hours, it recovers under half
+of the planted loss (see <code>tests/run_tests.py</code>). That it nonetheless reaches EirGrid's figure on real data
+means it also counts other turn-down that follows demand, such as minimum conventional generation and some
+local constraints, so it is best read as an independent indicator of the same size, not a reconstruction. Season and forecast band absorb most differences in forecast
+behaviour, but not all. EirGrid's figures use each wind farm's own availability signal, which is not public.
+Solar is not included. This is an independent estimate, not a replacement for the official figures.</p>
+
+<h2>Data quality checks</h2>
+<div class="tbl"><table><thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead><tbody><tr><td>coverage wind_mw</td><td>pass</td><td>99.96% of hours present</td></tr><tr><td>coverage wind_fc_mw</td><td>pass</td><td>99.99% of hours present</td></tr><tr><td>coverage snsp_pct</td><td>pass</td><td>99.96% of hours present</td></tr><tr><td>coverage demand_mw</td><td>pass</td><td>99.96% of hours present</td></tr><tr><td>wind in plausible range</td><td>pass</td><td>min -2 MW, max 4648 MW</td></tr><tr><td>wind forecast in plausible range</td><td>pass</td><td>min 10 MW, max 5634 MW</td></tr><tr><td>SNSP in 0-100%</td><td>pass</td><td>min 0.2%, max 76.5%</td></tr><tr><td>demand in plausible range</td><td>pass</td><td>min 2903 MW, max 7443 MW</td></tr><tr><td>forecast tracks actual wind</td><td>pass</td><td>correlation 0.952</td></tr><tr><td>no stuck wind readings (6+ identical hours)</td><td>pass</td><td>1 stuck hours</td></tr></tbody></table></div>
+
+<h2>Reproduce it</h2>
+<p><code>pip install -r requirements.txt</code>, then <code>python run_pipeline.py</code> downloads the data and rebuilds
+every number and figure; <code>python tests/run_tests.py</code> checks the method on synthetic data with known answers.</p>
+<p class="meta">Data: EirGrid Smart Grid Dashboard; EirGrid and SONI, Annual Renewable Constraint and Curtailment Report 2025, Table 3 (all-island wind).</p>
+</main></body></html>

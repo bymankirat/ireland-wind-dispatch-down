@@ -55,12 +55,14 @@ def main(argv):
     caps = A.yearly_caps(h)
     d = A.classify(h, caps)
     est = A.lost_energy(d)
-    pla = A.lost_energy(d, band="placebo")
+    pla = A.lost_energy(d, placebo=True)
+    alt = A.lost_energy(A.classify(h, caps, seasonal=False))   # robustness: demand quarters within year only
     short = est.loc[est["days"] < MIN_DAYS, "year"].tolist()
     if short:
         print(f"   years left out (fewer than {MIN_DAYS} days of data): {short}")
     est = est[est["days"] >= MIN_DAYS].reset_index(drop=True)
     pla = pla[pla["year"].isin(est["year"])].reset_index(drop=True)
+    alt = alt[alt["year"].isin(est["year"])].reset_index(drop=True)
     d = d[d["year"].isin(est["year"])]
     m, cmp_ = A.compare_official(est)
     years = sorted(est["year"].tolist())
@@ -71,6 +73,8 @@ def main(argv):
 
     m.to_csv(RESULTS_DIR / "yearly_vs_official.csv", index=False)
     pla.to_csv(RESULTS_DIR / "placebo_by_year.csv", index=False)
+    alt.to_csv(RESULTS_DIR / "robustness_year_quarters.csv", index=False)
+    A.ratio_table(d).to_csv(RESULTS_DIR / "ratio_by_wind_and_demand.csv")
     hr.to_csv(RESULTS_DIR / "by_hour.csv", index=False)
     drv.to_csv(RESULTS_DIR / "drivers_demand_by_wind.csv")
     mo.to_csv(RESULTS_DIR / "monthly.csv", index=False)
@@ -83,7 +87,8 @@ def main(argv):
     (RESULTS_DIR / "summary.json").write_text(json.dumps(summary, indent=2))
     print(m[["year", "share_of_hours_pct", "lost_gwh", "lost_pct", "ci_low", "ci_high",
              "official_curtailment_pct"]].round(2).to_string(index=False))
-    print("   placebo:", pla["lost_pct"].round(2).tolist())
+    print("   placebo (forecast under 1,000 MW):", pla["lost_pct"].round(2).tolist())
+    print("   robustness (quarters within year):", alt["lost_pct"].round(2).tolist())
     print("   comparison:", cmp_)
 
     print("4. Figures and report")
@@ -92,6 +97,7 @@ def main(argv):
     C.hour_profile(hr, FIG_DIR / "3_hour_profile.png")
     C.driver_heatmap(drv, FIG_DIR / "4_driver_heatmap.png")
     C.placebo(est, pla, FIG_DIR / "5_placebo.png")
+    C.ratio_lines(A.ratio_table(d), FIG_DIR / "0_ratio_lines.png")
     report.write()
     print("   docs/index.html written")
 
