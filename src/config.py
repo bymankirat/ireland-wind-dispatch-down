@@ -36,6 +36,9 @@ CAP_QUANTILE = 0.995
 AT_CAP_MARGIN = 2.0           # an hour is "at the limit" within 2 percentage points of it
 FREE_MARGIN = 10.0            # an hour is "well below the limit" 10 points or more under it
 MIN_FC_MW = 100.0             # hours with almost no forecast wind carry no information
+# The forecast over-predicts more in windy hours, and hours at the limit are windy, so the normal
+# actual/forecast ratio is measured separately for each band of forecast wind (MW).
+FC_BIN_MW = 500.0
 N_BOOT = 1000                 # day-level bootstrap resamples for confidence intervals
 SEED = 42
 

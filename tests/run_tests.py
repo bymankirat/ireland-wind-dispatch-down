@@ -48,11 +48,34 @@ check("no planted loss gives about zero", (e0["lost_pct"].abs() < 0.3).all() and
 ep = A.lost_energy(d, band="placebo", n_boot=200)
 check("placebo band about zero", (ep["lost_pct"].abs() < 0.3).all(), ep["lost_pct"].round(3).tolist())
 
-# 5. hand-checked arithmetic on a tiny table
-s = np.array([90.0, 100.0, 40.0, 50.0, 1000.0, 1.0])
+# 5. hand-checked arithmetic on a tiny table: one bin with free hours (ratio 0.9), band 50 MW
+#    forecast, 40 MW actual, 1000 MWh of wind in all -> lost 5, % = 5/1005
+nb = A.N_BINS
+s = np.zeros(4 * nb + 2)
+s[2], s[nb + 2] = 90.0, 100.0          # free hours in bin 2: actual 90, forecast 100
+s[2 * nb + 2], s[3 * nb + 2] = 40.0, 50.0  # band hours in bin 2: actual 40, forecast 50
+s[4 * nb], s[4 * nb + 1] = 1000.0, 1.0
 lost, pct = A._estimate(s)
 check("arithmetic: lost = 0.9*50 - 40 = 5", abs(lost - 5) < 1e-9)
 check("arithmetic: % = 5 / 1005", abs(pct - 100 * 5 / 1005) < 1e-9)
+s2 = s.copy()
+s2[2 * nb + 2], s2[3 * nb + 2] = 0.0, 0.0
+s2[2 * nb + 5], s2[3 * nb + 5] = 40.0, 50.0   # band hours in a bin with no free hours
+check("empty bin borrows the nearest bin's ratio", abs(A._estimate(s2)[0] - 5) < 1e-9)
+
+# 5b. forecast that over-predicts in windy hours, no curtailment: estimate and placebo stay ~0
+hb, tb = demo.make(planted_loss=0.0, seed=5, fc_bias=0.25)
+db = A.classify(hb, A.yearly_caps(hb))
+eb = A.lost_energy(db, n_boot=100)
+pb = A.lost_energy(db, band="placebo", n_boot=100)
+check("windy-hour forecast bias does not create a loss", (eb["lost_pct"].abs() < 0.5).all(),
+      eb["lost_pct"].round(3).tolist())
+check("... nor a placebo loss", (pb["lost_pct"].abs() < 0.5).all(), pb["lost_pct"].round(3).tolist())
+hb2, tb2 = demo.make(planted_loss=0.25, seed=6, fc_bias=0.25)
+eb2 = A.lost_energy(A.classify(hb2, A.yearly_caps(hb2)), n_boot=100)
+over = 100 * eb2["lost_gwh"].sum() / (eb2["wind_gwh"].sum() + eb2["lost_gwh"].sum())
+check("planted loss recovered despite forecast bias (within 1 point)", abs(over - tb2) < 1.0,
+      f"{over:.2f}% vs {tb2:.2f}%")
 
 # 6. comparison with official figures
 fake = pd.DataFrame({"year": [2023, 2024, 2025], "lost_pct": [4.0, 5.0, 4.0],
