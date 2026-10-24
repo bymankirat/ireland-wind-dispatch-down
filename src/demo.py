@@ -11,7 +11,8 @@ import numpy as np
 import pandas as pd
 
 
-def make(years=(2023, 2024), cap=75.0, planted_loss=0.25, seed=1) -> tuple[pd.DataFrame, float]:
+def make(years=(2023, 2024), cap=75.0, planted_loss=0.25, seed=1, fc_bias=0.0) -> tuple[pd.DataFrame, float]:
+    """fc_bias > 0 makes the forecast over-predict more in windy hours, as EirGrid's does."""
     rng = np.random.default_rng(seed)
     idx = pd.date_range(f"{years[0]}-01-01", f"{years[-1]}-12-31 23:00", freq="h")
     n = len(idx)
@@ -29,7 +30,7 @@ def make(years=(2023, 2024), cap=75.0, planted_loss=0.25, seed=1) -> tuple[pd.Da
     snsp = np.where(at_cap, cap - rng.uniform(0, 1.5, n), snsp_raw).clip(0, 100)
     wind = avail * (0.97 + rng.normal(0, 0.01, n))           # 3% normal shortfall (local constraints)
     wind = np.where(at_cap, wind * (1 - planted_loss), wind)
-    fc = avail * (1 + rng.normal(0, 0.08, n))
+    fc = avail * (1 + fc_bias * avail / 5000) * (1 + rng.normal(0, 0.08, n))
     h = pd.DataFrame({"wind_mw": wind, "wind_fc_mw": fc, "snsp_pct": snsp, "demand_mw": demand}, index=idx)
     h.index.name = "time"
     # the share of available wind lost in at-limit hours, measured against 0.97*available
