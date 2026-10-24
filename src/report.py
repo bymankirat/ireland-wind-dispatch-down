@@ -77,6 +77,7 @@ def write():
     hi_band = rt.index[-2]
     gap = 100 * (1 - rt.loc[hi_band, "Lowest demand"] / rt.loc[hi_band, "Highest demand"])
     night = float(hr.loc[hr["hour"].isin(list(range(0, 7)) + [23]), "lost_share_pct"].sum())
+    peak_cap = hr.loc[hr["at_cap_pct"].idxmax()]
     first_at, last_at = m.iloc[0]["share_of_hours_pct"], m.iloc[-1]["share_of_hours_pct"]
 
     tiles = [
@@ -142,8 +143,10 @@ should find nothing there. It finds at most {pmax:.1f}% in any year
 
 <h2>4. When the limit binds</h2>
 <p>The share of hours within {AT_CAP_MARGIN:.0f} points of the SNSP limit rose from {first_at:.1f}% in {R['first_year']}
-to {last_at:.1f}% in {R['last_year']}. In {recent[0]}–{recent[-1]}, about {night:.0f}% of the estimated lost energy
-fell between 11 pm and 7 am, when demand is lowest. Demand that can move into those hours (electric-vehicle
+to {last_at:.1f}% in {R['last_year']}. Those hours peak around {int(peak_cap['hour']):02d}:00 ({peak_cap['at_cap_pct']:.0f}% of hours in
+{recent[0]}–{recent[-1]}), consistent with solar adding to the non-synchronous share at midday. The wind that is
+turned down, though, is mostly a night-time loss: about {night:.0f}% of the estimated lost energy fell between
+11 pm and 7 am, when demand is lowest. Two different limits are at work. Demand that can move into those hours (electric-vehicle
 charging, storage, heating) is the cheapest way to use more of this wind.</p>
 <figure><img src="figures/2_monthly_at_cap.png" alt="Line chart of the monthly share of hours at the SNSP limit"></figure>
 <figure><img src="figures/3_hour_profile.png" alt="Bar chart of the share of estimated lost energy by hour of day"></figure>
